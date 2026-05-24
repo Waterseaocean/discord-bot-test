@@ -5,6 +5,8 @@ const client = new discord.Client({
   intents: Object.values(discord.GatewayIntentBits)
 });
 
+const ROLE_ID = process.env.AUTHORIZED_ROLE_ID;
+
 client.on(discord.Events.ClientReady, async () => {
   console.log(`Logged in as ${client.user.tag}!`);
 
@@ -44,7 +46,11 @@ client.on(discord.Events.ClientReady, async () => {
       ),
     new discord.SlashCommandBuilder()
       .setName('test')
-      .setDescription('test command')
+      .setDescription('test command'),
+
+    new discord.SlashCommandBuilder()
+      .setName('verify')
+      .setDescription('Display authentication panel')
   ];
 
   // await client.application.commands.set(commands); // グローバルコマンドは開発中に不向き
@@ -96,6 +102,35 @@ client.on(discord.Events.InteractionCreate, async (interaction) => {
   if (command === 'test') {
     await interaction.reply('test command executed!');
   }
+
+  if (command === 'verify') {
+    const embed = new discord.EmbedBuilder()
+      .setTitle('Verification')
+      .setDescription('Click the button below to verify yourself and get access to the server!')
+
+    const button = new discord.ButtonBuilder()
+      .setCustomId('verify_button')
+      .setLabel('Verify')
+      .setStyle(discord.ButtonStyle.Primary);
+
+    await interaction.reply({
+      embeds: [embed],
+      components: [new discord.ActionRowBuilder().addComponents(button)]
+    })
+  }
 });
+
+client.on(discord.Events.InteractionCreate, async (interaction) => {
+  if (!interaction.isButton()) return;
+
+  if (interaction.customId === 'verify_button') {
+    await interaction.member.roles.add(ROLE_ID);
+
+    await interaction.reply({
+      content: 'You have been verified and given access to the server!',
+      ephemeral: true // この返信はユーザーにしか見えないようにする
+    })
+  }
+})
 
 client.login(process.env.DISCORD_BOT_TOKEN);
