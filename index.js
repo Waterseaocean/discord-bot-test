@@ -27,6 +27,14 @@ client.on(discord.Events.ClientReady, async () => {
         .setRequired(true)
       ),
     new discord.SlashCommandBuilder()
+      .setName('test_user')
+      .setDescription('test user command')
+      .addUserOption(option => option
+        .setName('option_name')
+        .setDescription('option description')
+        .setRequired(true)
+      ),
+    new discord.SlashCommandBuilder()
       .setName('test')
       .setDescription('test command')
   ];
@@ -65,6 +73,11 @@ client.on(discord.Events.InteractionCreate, async (interaction) => {
   if (command === 'test_num') {
     const arg = interaction.options.getNumber('option_name');
     await interaction.reply('you input number: ' + arg);
+  }
+
+  if (command === 'test_user') {
+    const arg = interaction.options.getUser('option_name');
+    await interaction.reply('you input user: ' + arg.toString());
   }
 
   if (command === 'test') {
