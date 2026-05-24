@@ -31,7 +31,18 @@ client.on(discord.Events.ClientReady, async () => {
       .setDescription('test2 command')
   ];
 
-  await client.application.commands.set(commands);
+  // await client.application.commands.set(commands); // グローバルコマンドは開発中に不向き
+  
+  // 開発用にギルドコマンドを登録する方法
+  guild = await client.guilds.cache.get(process.env.DISCORD_GUILD_ID)
+
+  if (!guild) {
+    console.log('Guild not found');
+    return;
+  }
+
+  await guild.commands.set(commands);
+  console.log("Guild commands registered!");
 });
 
 client.on(discord.Events.MessageCreate, async (message) => {
