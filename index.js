@@ -11,8 +11,8 @@ client.on(discord.Events.ClientReady, async () => {
   // コマンドの登録
   const commands = [
     new discord.SlashCommandBuilder()
-      .setName('test')
-      .setDescription('test command')
+      .setName('test_string')
+      .setDescription('test string command')
       .addStringOption(option => option
         .setName('option_name') // optionNameだと動かない. 小文字のスネークケースでないといけない.
         .setDescription('option description')
@@ -27,8 +27,8 @@ client.on(discord.Events.ClientReady, async () => {
         .setRequired(true)
       ),
     new discord.SlashCommandBuilder()
-      .setName('test2')
-      .setDescription('test2 command')
+      .setName('test')
+      .setDescription('test command')
   ];
 
   // await client.application.commands.set(commands); // グローバルコマンドは開発中に不向き
@@ -57,7 +57,7 @@ client.on(discord.Events.InteractionCreate, async (interaction) => {
 
   const command = interaction.commandName;
 
-  if (command === 'test') {
+  if (command === 'test_string') {
     const arg = interaction.options.getString('option_name');
     await interaction.reply('you input: ' + arg);
   }
@@ -67,8 +67,8 @@ client.on(discord.Events.InteractionCreate, async (interaction) => {
     await interaction.reply('you input number: ' + arg);
   }
 
-  if (command === 'test2') {
-    await interaction.reply('test2 command executed!');
+  if (command === 'test') {
+    await interaction.reply('test command executed!');
   }
 });
 
