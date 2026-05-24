@@ -35,6 +35,14 @@ client.on(discord.Events.ClientReady, async () => {
         .setRequired(true)
       ),
     new discord.SlashCommandBuilder()
+      .setName('test_channel')
+      .setDescription('test channel command')
+      .addChannelOption(option => option
+        .setName('option_name')
+        .setDescription('option description')
+        .setRequired(true)
+      ),
+    new discord.SlashCommandBuilder()
       .setName('test')
       .setDescription('test command')
   ];
@@ -78,6 +86,11 @@ client.on(discord.Events.InteractionCreate, async (interaction) => {
   if (command === 'test_user') {
     const arg = interaction.options.getUser('option_name');
     await interaction.reply('you input user: ' + arg.toString());
+  }
+
+  if (command === 'test_channel') {
+    const arg = interaction.options.getChannel('option_name');
+    await interaction.reply('you input channel: ' + arg.toString());
   }
 
   if (command === 'test') {
