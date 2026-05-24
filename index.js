@@ -19,6 +19,14 @@ client.on(discord.Events.ClientReady, async () => {
         .setRequired(true) // 引数の入力が必須か否か
       ),
     new discord.SlashCommandBuilder()
+      .setName('test_num')
+      .setDescription('test number command')
+      .addNumberOption(option => option
+        .setName('option_name')
+        .setDescription('option description')
+        .setRequired(true)
+      ),
+    new discord.SlashCommandBuilder()
       .setName('test2')
       .setDescription('test2 command')
   ];
@@ -41,6 +49,11 @@ client.on(discord.Events.InteractionCreate, async (interaction) => {
   if (command === 'test') {
     const arg = interaction.options.getString('option_name');
     await interaction.reply('you input: ' + arg);
+  }
+
+  if (command === 'test_num') {
+    const arg = interaction.options.getNumber('option_name');
+    await interaction.reply('you input number: ' + arg);
   }
 
   if (command === 'test2') {
