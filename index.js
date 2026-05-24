@@ -13,6 +13,11 @@ client.on(discord.Events.ClientReady, async () => {
     new discord.SlashCommandBuilder()
       .setName('test')
       .setDescription('test command')
+      .addStringOption(option => option
+        .setName('option_name') // optionNameだと動かない. 小文字のスネークケースでないといけない.
+        .setDescription('option description')
+        .setRequired(true) // 引数の入力が必須か否か
+      )
   ];
 
   await client.application.commands.set(commands);
@@ -31,7 +36,8 @@ client.on(discord.Events.InteractionCreate, async (interaction) => {
   const command = interaction.commandName;
 
   if (command === 'test') {
-    await interaction.reply('finished');
+    const arg = interaction.options.getString('option_name');
+    await interaction.reply('you input: ' + arg);
   }
 });
 
