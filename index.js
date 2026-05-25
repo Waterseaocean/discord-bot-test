@@ -56,7 +56,7 @@ client.on(discord.Events.ClientReady, async () => {
   // await client.application.commands.set(commands); // グローバルコマンドは開発中に不向き
   
   // 開発用にギルドコマンドを登録する方法
-  guild = await client.guilds.cache.get(process.env.DISCORD_GUILD_ID)
+  const guild = client.guilds.cache.get(process.env.DISCORD_GUILD_ID)
 
   if (!guild) {
     console.log('Guild not found');
@@ -124,12 +124,37 @@ client.on(discord.Events.InteractionCreate, async (interaction) => {
   if (!interaction.isButton()) return;
 
   if (interaction.customId === 'verify_button') {
-    await interaction.member.roles.add(ROLE_ID);
+    
+    if (!ROLE_ID) {
+      await interaction.reply({
+        content: 'Role ID is not set.',
+        ephemeral: true
+      })
+      return;
+    }
 
-    await interaction.reply({
-      content: 'You have been verified and given access to the server!',
-      ephemeral: true // この返信はユーザーにしか見えないようにする
-    })
+    if (!interacion.inGuild()) {
+      await interaction.reply({
+        content: 'This command can only be used in a server.',
+        ephemeral: true
+      })
+    }
+
+    try {
+      await interaction.member.roles.add(ROLE_ID);
+
+      await interaction.reply({
+        content: 'You have been verified and given access to the server!',
+        ephemeral: true // この返信はユーザーにしか見えないようにする
+      });
+    } catch (error) {
+      console.error(error);
+
+      await interaction.reply({
+        content: 'There was an error while trying to verify you. Please contact the server administrator.',
+        ephemeral: true
+      });
+    }
   }
 })
 
